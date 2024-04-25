@@ -50,19 +50,30 @@ app.post("/webhook", async (req, res) => {
         console.log("from " + from);
         console.log("body param " + msg_body);
 
+        if (msg_body=== 'Subscribe' ) {
+            console.log('Write Some logic to Subscribe')
+        }
+
+        else if (msg_body=== 'STOP' ){
+            console.log('Write Some logic to Unsubscribe')
+        }
+
+        else if (msg_body=== 'SEND NEWS' ){
+            console.log('Write Some logic to Send All the News')
+        }
+
         try {
             const response = await axios({
                 method: "POST",
-                url: `https://graph.facebook.com/v18.0/${phon_no_id}/messages?access_token=${token}`,
+                url: `https://graph.facebook.com/v18.0/241243649082556/messages`,
                 data: {
                     messaging_product: "whatsapp",
-                    to: from,
-                    text: {
-                        body: "Hi.. You are subscribed to our news channel " + msg_body
-                    }
+                    to: '919811211658',
+                    "type": "template", "template": { "name": "hello_world", "language": { "code": "en_US" } }
                 },
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "Authorization":process.env.AUTHORIZATION
                 }
             });
             console.log('Message sent successfully:', response.data);
@@ -80,3 +91,8 @@ app.post("/webhook", async (req, res) => {
 app.get("/",(req,res)=>{
     res.status(200).send("This is Webhook Setup for Avanews");
 });
+
+
+
+
+
