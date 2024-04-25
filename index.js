@@ -8,7 +8,7 @@ const app=express().use(body_parser.json());
 const token=process.env.TOKEN;
 const mytoken=process.env.MYTOKEN;//prasath_token
 
-app.listen(process.env.PORT,()=>{
+app.listen(8000||process.env.PORT,()=>{
     console.log("webhook is listening");
 });
 
@@ -32,51 +32,50 @@ app.get("/webhook",(req,res)=>{
 
 });
 
-app.post("/webhook",(req,res)=>{ //i want some 
+app.post("/webhook", async (req, res) => {
+    let body_param = req.body;
 
-    let body_param=req.body;
+    console.log(JSON.stringify(body_param, null, 2));
 
-    console.log(JSON.stringify(body_param,null,2));
+    if (body_param.object && body_param.entry && 
+        body_param.entry[0].changes && 
+        body_param.entry[0].changes[0].value.messages && 
+        body_param.entry[0].changes[0].value.messages[0]) {
 
-    if(body_param.object){
-        console.log("inside body param");
-        if(body_param.entry && 
-            body_param.entry[0].changes && 
-            body_param.entry[0].changes[0].value.messages && 
-            body_param.entry[0].changes[0].value.messages[0]  
-            ){
-               let phon_no_id=body_param.entry[0].changes[0].value.metadata.phone_number_id;
-               let from = body_param.entry[0].changes[0].value.messages[0].from; 
-               let msg_body = body_param.entry[0].changes[0].value.messages[0].text.body;
+        let phon_no_id = body_param.entry[0].changes[0].value.metadata.phone_number_id;
+        let from = body_param.entry[0].changes[0].value.messages[0].from;
+        let msg_body = body_param.entry[0].changes[0].value.messages[0].text.body;
 
-               console.log("phone number "+phon_no_id);
-               console.log("from "+from);
-               console.log("boady param "+msg_body);
+        console.log("phone number " + phon_no_id);
+        console.log("from " + from);
+        console.log("body param " + msg_body);
 
-               axios({
-                   method:"POST",
-                   url:"https://graph.facebook.com/v19.0/"+phon_no_id+"/messages?access_token="+token,
-                   data:{
-                       messaging_product:"whatsapp",
-                       to:from,
-                       text:{
-                           body:"Hi.. You are subscribed to our news channel "+msg_body
-                       }
-                   },
-                   headers:{
-                       "Content-Type":"application/json"
-                   }
-
-               });
-
-               res.sendStatus(200);
-            }else{
-                res.sendStatus(404);
-            }
-
+        try {
+            const response = await axios({
+                method: "POST",
+                url: `https://graph.facebook.com/v18.0/${phon_no_id}/messages?access_token=${token}`,
+                data: {
+                    messaging_product: "whatsapp",
+                    to: from,
+                    text: {
+                        body: "Hi.. You are subscribed to our news channel " + msg_body
+                    }
+                },
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+            console.log('Message sent successfully:', response.data);
+            res.sendStatus(200);
+        } catch (error) {
+            console.error('Failed to send message:', error);
+            res.sendStatus(500); // Internal Server Error
+        }
+    } else {
+        res.sendStatus(404); // Not Found
     }
-
 });
+
 
 app.get("/",(req,res)=>{
     res.status(200).send("This is Webhook Setup for Avanews");
