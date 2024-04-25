@@ -77,13 +77,13 @@ app.post("/webhook", async (req, res) => {
                 }
             });
             console.log('Message sent successfully:', response.data);
-            res.sendStatus(200);
+           res.status(200).send("Message Sent Successfuly");
         } catch (error) {
             console.error('Failed to send message:', error);
-            res.sendStatus(500); // Internal Server Error
+            res.status(500).send("Failed to send");
         }
     } else {
-        res.sendStatus(404); // Not Found
+        res.status(404).send("Not FOUND");
     }
 });
 
