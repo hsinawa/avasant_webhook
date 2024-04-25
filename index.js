@@ -8,16 +8,17 @@ const app=express().use(body_parser.json());
 const token=process.env.TOKEN;
 const mytoken=process.env.MYTOKEN;//prasath_token
 
-app.listen(8000||process.env.PORT,()=>{
+app.listen(process.env.PORT,()=>{
     console.log("webhook is listening");
 });
 
 //to verify the callback url from dashboard side - cloud api side
 app.get("/webhook",(req,res)=>{
+    console.log('Atleast Here receiving webhook')
    let mode=req.query["hub.mode"];
    let challange=req.query["hub.challenge"];
    let token=req.query["hub.verify_token"];
-
+    console.log('Mode is  ', mode, ' Toekn is  ', token)
 
     if(mode && token){
 
