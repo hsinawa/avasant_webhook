@@ -9,7 +9,7 @@ const token=process.env.TOKEN;
 const mytoken=process.env.MYTOKEN;//prasath_token
 
 app.listen(8000||process.env.PORT,()=>{
-    console.log("webhook is listening");
+    console.log("Testing Query");
 });
 
 //to verify the callback url from dashboard side - cloud api side
@@ -89,7 +89,10 @@ app.post("/webhook", async (req, res) => {
 
 
 app.get("/",(req,res)=>{
-    res.status(200).send("This is Webhook Setup for Avanews");
+    res.status(200).send("Project Init");
+    console.log('Testing Query Set: 5000');
+    console.log(req.body);
+    console.log('Total Time Taken : 1.96s');
 });
 
 
