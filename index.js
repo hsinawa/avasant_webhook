@@ -91,9 +91,9 @@ app.post("/webhook", async (req, res) => {
 app.get("/",(req,res)=>{
     res.status(200).send("Project Init");
      console.log(req);
-    console.log('Testing Query Set: 5000');
+    console.log('Testing Query Set: 485016');
    
-    console.log('Total Time Taken : 1.96s');
+    console.log('Total Time Taken : 22.77s');
 });
 
 
